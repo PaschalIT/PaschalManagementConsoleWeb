@@ -12,8 +12,8 @@ namespace WebApplication1 {
 
         protected void Page_Load (object sender, EventArgs e) {
             if (!IsPostBack) {
-                Globals.cred = CredentialManager.PromptForCredentials ("Target", ref Globals.save, "Please enter credentials", "Enter credentials");
-                Globals.searcher = new DirectorySearcher (new DirectoryEntry ("LDAP://OU=Users, OU=Springdale, DC=US, DC=PaschalCorp, DC=com", Globals.cred.UserName, Globals.cred.Password));
+                //Globals.cred = CredentialManager.PromptForCredentials ("Target", ref Globals.save, "Please enter credentials", "Enter credentials");
+                Globals.searcher = new DirectorySearcher (new DirectoryEntry ("LDAP://OU=Users, OU=Springdale, DC=US, DC=PaschalCorp, DC=com", "mcarter-adm", "KibethAstarael1"));
             }
         }
 
@@ -90,7 +90,17 @@ namespace WebApplication1 {
             SearchResult managerObj = GetSingleADUser ((string)input.Properties["manager"][0]);
             string managerName = (string)managerObj.Properties["displayname"][0];
             string DoH = input.Properties["description"][0].ToString ().Split (' ')[2];
-            string DoT = input.Properties["description"][0].ToString ().Split (' ')[6];
+            string DoT;
+            try {
+                DoT = input.Properties["description"][0].ToString ().Split (' ')[6];
+            } catch {
+                DoT = "N/A";
+            }
+
+            List<string> dirrep = new List<string> (); var listReports = input.Properties["directreports"];
+            for (int i = 0; i < listReports.Count; i++) {
+                dirrep.Add ((string)GetSingleADUser ((string)listReports[i]).Properties["displayname"][0]);
+            }
 
             Users user = new Users {
                 DisplayName = (string)input.Properties["displayname"][0],
@@ -104,12 +114,13 @@ namespace WebApplication1 {
                 Title = (string)input.Properties["title"][0],
                 PassLastChanged = (input.Properties["pwdlastset"] != null && input.Properties["pwdlastset"].Count > 0) ? DateTime.FromFileTime ((long)input.Properties["pwdlastset"][0]).ToString () : "N/A",
                 Manager = managerName,
-                PassExpiration = (input.Properties["pwdlastset"] != null && input.Properties["passwordneverexpires"].Count > 0 && input.Properties["passwordneverexpires"][0] != null) ? DateTime.FromFileTime ((long)input.Properties["pwdlastset"][0]).AddDays (120).ToString () : "N/A",
+                PassExpiration = (input.Properties["pwdlastset"] != null && Convert.ToBoolean ((int)input.Properties["useraccountcontrol"][0] & 65536)) ? "N/A" : DateTime.FromFileTime ((long)input.Properties["pwdlastset"][0]).AddDays (120).ToString (),
                 FailedLogonTime = (input.Properties["badpasswordtime"] != null && input.Properties["badpasswordtime"].Count > 0) ? DateTime.FromFileTime ((long)input.Properties["badpasswordtime"][0]).ToString () : "N/A",
                 NumFailedLogons = (int)input.Properties["badpwdcount"][0],
                 DateOfHire = DoH,
                 DateOfTermination = DoT == "" ? "N/A" : DoT,
-                LastModified = (input.Properties["lastmodified"] != null && input.Properties["lastmodified"].Count > 0) ? DateTime.FromFileTime((long)input.Properties["lastmodified"][0]).ToString() : "N/A"
+                LastModified = (input.Properties["whenchanged"] != null && input.Properties["whenchanged"].Count > 0) ? input.Properties["whenchanged"][0].ToString() : "N/A",
+                DirectReports = dirrep
             };
 
             //if (input.Properties["lastlogon"] != null && input.Properties["lastlogon"].Count > 0) {
@@ -141,6 +152,8 @@ namespace WebApplication1 {
             textUMDateOfHire.Text = Globals.User.DateOfHire;
             textUMDateOfTermination.Text = Globals.User.DateOfTermination;
             textUMLastModified.Text = Globals.User.LastModified;
+            listUMDirectReports.DataSource = Globals.User.DirectReports;
+            listUMDirectReports.DataBind ();
         }
 
         protected void listUsers_SelectedIndexChanged (object sender, EventArgs e) {
@@ -167,6 +180,7 @@ namespace WebApplication1 {
         public string DateOfHire { get; set; }
         public string DateOfTermination { get; set; }
         public string LastModified { get; set; }
+        public List<string> DirectReports { get; set; }
     }
 
     static class Globals {
