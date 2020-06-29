@@ -73,6 +73,20 @@ namespace WebApplication1 {
             return Globals.searcher.FindOne ();
         }
 
+        public SearchResult GetSingleEXUser (string input) {
+            if (input.Contains ("CN=")) {
+                Globals.searcher.Filter = $"(&(objectClass=user)(distinguishedname={input}))";
+            } else {
+                Globals.searcher.Filter = $"(&(objectClass=user)(samaccountname={input}))";
+            }
+
+            Globals.searcher.SearchRoot = new DirectoryEntry ("LDAP://OU=Springdale, DC=US, DC=PaschalCorp, DC=com");
+            SearchResult res = Globals.searcher.FindOne ();
+            Globals.searcher.SearchRoot = new DirectoryEntry ("LDAP://OU=Users, OU=Springdale, DC=US, DC=PaschalCorp, DC=com");
+
+            return res;
+        }
+
         public void UpdateListUsers () {
             List<Users> UserList = GetAllADUsers (); List<string> UserNameList = new List<string> {
                 " "
@@ -100,7 +114,20 @@ namespace WebApplication1 {
             List<string> dirrep = new List<string> (); var listReports = input.Properties["directreports"];
             if (listReports != null) {
                 for (int i = 0; i < listReports.Count; i++) {
-                    dirrep.Add ((string)GetSingleADUser ((string)listReports[i]).Properties["displayname"][0]);
+                    SearchResult temp = GetSingleADUser ((string)listReports[i]);
+                    if (temp == null) {
+                        temp = GetSingleEXUser ((string)listReports[i]);
+                    }
+                    string name = (string)temp.Properties["displayname"][0];
+                    string disname = (string)temp.Properties["distinguishedname"][0];
+
+                    if (disname.Contains ("Contractors")) {
+                        name += " - CONTR";
+                    } else if (disname.Contains("Terminated")) {
+                        name += " - TERM";
+                    }
+
+                    dirrep.Add (name);
                 }
             }
 
