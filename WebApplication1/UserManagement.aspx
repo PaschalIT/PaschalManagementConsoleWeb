@@ -74,7 +74,7 @@
                 </td>
             </tr>
             <tr>
-                <td style="width: 20ex; ">&nbsp;</td>
+                <td style="width: 20ex; ">Direct Reports</td>
                 <td class="modal-sm" style="width: 30%; " rowspan="4">
                     <asp:ListBox ID="listUMDirectReports" runat="server" Height="100%" Width="70%"></asp:ListBox>
                 </td>

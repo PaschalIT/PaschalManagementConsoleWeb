@@ -98,8 +98,10 @@ namespace WebApplication1 {
             }
 
             List<string> dirrep = new List<string> (); var listReports = input.Properties["directreports"];
-            for (int i = 0; i < listReports.Count; i++) {
-                dirrep.Add ((string)GetSingleADUser ((string)listReports[i]).Properties["displayname"][0]);
+            if (listReports != null) {
+                for (int i = 0; i < listReports.Count; i++) {
+                    dirrep.Add ((string)GetSingleADUser ((string)listReports[i]).Properties["displayname"][0]);
+                }
             }
 
             Users user = new Users {
@@ -152,8 +154,10 @@ namespace WebApplication1 {
             textUMDateOfHire.Text = Globals.User.DateOfHire;
             textUMDateOfTermination.Text = Globals.User.DateOfTermination;
             textUMLastModified.Text = Globals.User.LastModified;
-            listUMDirectReports.DataSource = Globals.User.DirectReports;
-            listUMDirectReports.DataBind ();
+            if (Globals.User.DirectReports != null && Globals.User.DirectReports.Count > 0) {
+                listUMDirectReports.DataSource = Globals.User.DirectReports;
+                listUMDirectReports.DataBind ();
+            }
         }
 
         protected void listUsers_SelectedIndexChanged (object sender, EventArgs e) {
