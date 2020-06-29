@@ -5,9 +5,9 @@
     <div class="jumbotron">
         <asp:Label ID="Label1" runat="server" Text="Username"></asp:Label>
         <br />
-        <asp:DropDownList ID="listUsers" runat="server" OnLoad="listUsers_Load" OnSelectedIndexChanged="listUsers_SelectedIndexChanged" ViewStateMode="Enabled" Width="300px">
+        <asp:DropDownList ID="listUsers" runat="server" OnLoad="listUsers_Load" OnSelectedIndexChanged="listUsers_SelectedIndexChanged" ViewStateMode="Enabled" Width="300px" AutoPostBack="True">
         </asp:DropDownList>
-        <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text="Click Me!" />
+        <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text="Refresh Info" />
     </div>
 
     <asp:Panel ID="Panel1" runat="server" Height="504px" Width="100%">

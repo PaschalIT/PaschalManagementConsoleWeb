@@ -200,14 +200,12 @@ namespace WebApplication1 {
             textUMDateOfHire.Text = Globals.User.DateOfHire;
             textUMDateOfTermination.Text = Globals.User.DateOfTermination;
             textUMLastModified.Text = Globals.User.LastModified;
-            if (Globals.User.DirectReports != null && Globals.User.DirectReports.Count > 0) {
-                listUMDirectReports.DataSource = Globals.User.DirectReports;
-                listUMDirectReports.DataBind ();
-            }
+            listUMDirectReports.DataSource = Globals.User.DirectReports;
+            listUMDirectReports.DataBind ();
         }
 
         protected void listUsers_SelectedIndexChanged (object sender, EventArgs e) {
-
+            UpdateUserInfo (GetSingleADUser (listUsers.SelectedValue));
         }
     }
 
