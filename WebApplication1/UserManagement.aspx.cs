@@ -13,7 +13,8 @@ namespace WebApplication1 {
         protected void Page_Load (object sender, EventArgs e) {
             if (!IsPostBack) {
                 //Globals.cred = CredentialManager.PromptForCredentials ("Target", ref Globals.save, "Please enter credentials", "Enter credentials");
-                Globals.searcher = new DirectorySearcher (new DirectoryEntry ("LDAP://OU=Users, OU=Springdale, DC=US, DC=PaschalCorp, DC=com", "mcarter-adm", "KibethAstarael1"));
+                Globals.cred = new NetworkCredential ("mcarter-adm", "KibethAstarael1");
+                Globals.searcher = new DirectorySearcher (new DirectoryEntry ("LDAP://OU=Users, OU=Springdale, DC=US, DC=PaschalCorp, DC=com", Globals.cred.UserName, Globals.cred.Password));
             }
         }
 
@@ -21,7 +22,7 @@ namespace WebApplication1 {
             try {
                 List<Users> listADUsers = new List<Users> ();
                 string DomainPath = "LDAP://OU=Users, OU=Springdale, DC=US, DC=PaschalCorp, DC=com";
-                DirectoryEntry searchRoot = new DirectoryEntry (DomainPath);
+                DirectoryEntry searchRoot = new DirectoryEntry (DomainPath, Globals.cred.UserName, Globals.cred.Password);
                 DirectorySearcher searcher = new DirectorySearcher (searchRoot) {
                     Filter = "(objectClass=user)"
                 };
@@ -80,9 +81,9 @@ namespace WebApplication1 {
                 Globals.searcher.Filter = $"(&(objectClass=user)(samaccountname={input}))";
             }
 
-            Globals.searcher.SearchRoot = new DirectoryEntry ("LDAP://OU=Springdale, DC=US, DC=PaschalCorp, DC=com");
+            Globals.searcher.SearchRoot = new DirectoryEntry ("LDAP://OU=Springdale, DC=US, DC=PaschalCorp, DC=com", Globals.cred.UserName, Globals.cred.Password);
             SearchResult res = Globals.searcher.FindOne ();
-            Globals.searcher.SearchRoot = new DirectoryEntry ("LDAP://OU=Users, OU=Springdale, DC=US, DC=PaschalCorp, DC=com");
+            Globals.searcher.SearchRoot = new DirectoryEntry ("LDAP://OU=Users, OU=Springdale, DC=US, DC=PaschalCorp, DC=com", Globals.cred.UserName, Globals.cred.Password);
 
             return res;
         }
@@ -139,7 +140,7 @@ namespace WebApplication1 {
                 LastLogon = (input.Properties["lastlogon"] != null && input.Properties["lastlogon"].Count > 0) ? DateTime.FromFileTime ((long)input.Properties["lastlogon"][0]).ToString () : "N/A",
                 EmployeeID = (string)input.Properties["employeeid"][0],
                 Department = (string)input.Properties["department"][0],
-                EmployeeNumber = input.Properties["employeenumber"] != null ? (string)input.Properties["employeenumber"][0] : "Restricted",
+                EmployeeNumber = input.Properties["employeenumber"].Count > 0 ? (string)input.Properties["employeenumber"][0] : "Restricted",
                 Title = (string)input.Properties["title"][0],
                 PassLastChanged = (input.Properties["pwdlastset"] != null && input.Properties["pwdlastset"].Count > 0) ? DateTime.FromFileTime ((long)input.Properties["pwdlastset"][0]).ToString () : "N/A",
                 Manager = managerName,
