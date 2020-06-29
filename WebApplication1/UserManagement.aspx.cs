@@ -102,8 +102,26 @@ namespace WebApplication1 {
         }
 
         public void UpdateUserInfo (SearchResult input) {
-            SearchResult managerObj = GetSingleADUser ((string)input.Properties["manager"][0]);
-            string managerName = (string)managerObj.Properties["displayname"][0];
+            SearchResult managerObj;
+            string managerName; string managerDisname;
+            try {
+                managerObj = GetSingleADUser ((string)input.Properties["manager"][0]);
+                if (managerObj == null) {
+                    managerObj = GetSingleEXUser ((string)input.Properties["manager"][0]);
+                }
+                if (managerObj != null) {
+                    managerName = (string)managerObj.Properties["displayname"][0];
+                    managerDisname = (string)managerObj.Properties["distinguishedname"][0];
+                    if (managerDisname.Contains ("Terminated")) {
+                        managerName += " - TERM - Please update";
+                    }
+                } else {
+                    managerName = "Not found - Please update";
+                }
+            } catch {
+                managerName = "Not found - Please update";
+            }
+           
             string DoH = input.Properties["description"][0].ToString ().Split (' ')[2];
             string DoT;
             try {
