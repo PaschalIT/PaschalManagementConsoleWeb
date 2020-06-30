@@ -51,6 +51,7 @@
                 <td style="width: 20%">Employee Number</td>
                 <td class="modal-sm" style="width: 30%">
                     <asp:TextBox ID="textUMEmployeeNumber" runat="server" Width="70%" ReadOnly="True"></asp:TextBox>
+                    <asp:Button ID="buttonUMEmployeeNumber" runat="server" OnClick="buttonUMEmployeeNumber_Click" Text="Show" />
                 </td>
             </tr>
             <tr>

@@ -1,11 +1,9 @@
-﻿using AdysTech.CredentialManager;
-using CredentialManagement;
-using Microsoft.Ajax.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.DirectoryServices;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -17,6 +15,20 @@ namespace WebApplication1 {
                 //Globals.cred = CredentialManager.PromptForCredentials ("Target", ref Globals.save, "Please enter credentials", "Enter credentials");
                 Globals.cred = new NetworkCredential ("mcarter-adm", "KibethAstarael1");
                 Globals.searcher = new DirectorySearcher (new DirectoryEntry ("LDAP://OU=Users, OU=Springdale, DC=US, DC=PaschalCorp, DC=com", Globals.cred.UserName, Globals.cred.Password));
+                listUMDirectReports.Attributes.Add ("ondblclick", ClientScript.GetPostBackEventReference (listUMDirectReports, "dblclick"));
+                //listUMDirectReports.Attributes.Add ("onclick", ClientScript.GetPostBackEventReference (listUMDirectReports, "mouseclick"));
+                textUMEmployeeNumber.Attributes["type"] = "password";
+            }
+            if (Request["__EVENTARGUMENT"] != null) {
+                if (Request["__EVENTARGUMENT"] == "dblclick" && listUMDirectReports.SelectedIndex >= 0) {
+                    List<Users> UserList = GetAllADUsers ();
+                    IEnumerable<Users> User = UserList.Where (user => user.DisplayName.Equals (Regex.Split (listUMDirectReports.SelectedValue, " - ")[0]));
+                    if (User.FirstOrDefault () != null) {
+                        UpdateUserInfo (GetSingleEXUser (User.FirstOrDefault ().UserName));
+                    } else {
+                        MessageBox.Show (this, "Cannot load user");
+                    }
+                }
             }
         }
 
@@ -169,7 +181,7 @@ namespace WebApplication1 {
                     Manager = managerName,
                     PassExpiration = (input.Properties["pwdlastset"] != null && Convert.ToBoolean ((int)input.Properties["useraccountcontrol"][0] & 65536)) ? "N/A" : DateTime.FromFileTime ((long)input.Properties["pwdlastset"][0]).AddDays (120).ToString (),
                     FailedLogonTime = (input.Properties["badpasswordtime"] != null && input.Properties["badpasswordtime"].Count > 0) ? DateTime.FromFileTime ((long)input.Properties["badpasswordtime"][0]).ToString () : "N/A",
-                    NumFailedLogons = (int)input.Properties["badpwdcount"][0],
+                    NumFailedLogons = input.Properties["badpwdcount"].Count > 0 ? (int)input.Properties["badpwdcount"][0] : 0,
                     DateOfHire = DoH,
                     DateOfTermination = DoT == "" ? "N/A" : DoT,
                     LastModified = (input.Properties["whenchanged"] != null && input.Properties["whenchanged"].Count > 0) ? input.Properties["whenchanged"][0].ToString () : "N/A",
@@ -228,6 +240,11 @@ namespace WebApplication1 {
             var children = (control.Controls != null) ? control.Controls.OfType<TControl> () : Enumerable.Empty<TControl> ();
             return children.SelectMany (c => GetChildControls<TControl> (c)).Concat (children);
         }
+
+        protected void buttonUMEmployeeNumber_Click (object sender, EventArgs e) {
+            textUMEmployeeNumber.Attributes["type"] = textUMEmployeeNumber.Attributes["type"] == "password" ? "" : "password";
+            buttonUMEmployeeNumber.Text = textUMEmployeeNumber.Attributes["type"] == "password" ? "Show" : "Hide";
+        }
     }
 
     public class Users {
@@ -257,5 +274,11 @@ namespace WebApplication1 {
         public static NetworkCredential cred;
         public static DirectorySearcher searcher;
         public static bool save = true;
+    }
+
+    public static class MessageBox {
+        public static void Show (this Page Page, String Message) {
+            Page.ClientScript.RegisterStartupScript (Page.GetType (), "MessageBox", "<script language='javascript'>alert('" + Message + "');</script>");
+        }
     }
 }
