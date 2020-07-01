@@ -139,7 +139,6 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
-    <Content Include="Test.aspx" />
     <Content Include="AutoComplete.asmx" />
     <None Include="Properties\PublishProfiles\WAPP03V Publish.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
@@ -233,13 +232,6 @@
     </Compile>
     <Compile Include="ViewSwitcher.ascx.designer.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Test.aspx.cs">
-      <DependentUpon>Test.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Test.aspx.designer.cs">
-      <DependentUpon>Test.aspx</DependentUpon>
     </Compile>
     <Compile Include="AutoComplete.asmx.cs">
       <DependentUpon>AutoComplete.asmx</DependentUpon>
