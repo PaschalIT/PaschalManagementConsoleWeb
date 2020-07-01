@@ -6,14 +6,18 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.DirectoryServices.AccountManagement;
+using System.Web.Services;
 
 namespace WebApplication1 {
+    [System.Web.Script.Services.ScriptService]
     public partial class _Default : Page {
 
         protected void Page_Load (object sender, EventArgs e) {
             if (!IsPostBack) {
                 //Globals.cred = CredentialManager.PromptForCredentials ("Target", ref Globals.save, "Please enter credentials", "Enter credentials");
                 Globals.cred = new NetworkCredential ("mcarter-adm", "KibethAstarael1");
+                Globals.principalContext = new PrincipalContext (ContextType.Domain, "WDC02V", "OU=Users, OU=Springdale, DC=US, DC=PaschalCorp, DC=com", Globals.cred.UserName, Globals.cred.Password);
                 Globals.searcher = new DirectorySearcher (new DirectoryEntry ("LDAP://OU=Users, OU=Springdale, DC=US, DC=PaschalCorp, DC=com", Globals.cred.UserName, Globals.cred.Password));
                 listUMDirectReports.Attributes.Add ("ondblclick", ClientScript.GetPostBackEventReference (listUMDirectReports, "dblclick"));
                 //listUMDirectReports.Attributes.Add ("onclick", ClientScript.GetPostBackEventReference (listUMDirectReports, "mouseclick"));
@@ -25,6 +29,7 @@ namespace WebApplication1 {
                     IEnumerable<Users> User = UserList.Where (user => user.DisplayName.Equals (Regex.Split (listUMDirectReports.SelectedValue, " - ")[0]));
                     if (User.FirstOrDefault () != null) {
                         UpdateUserInfo (GetSingleEXUser (User.FirstOrDefault ().UserName));
+                        //comboUMUsers.SelectedValue = User.FirstOrDefault ().UserName;
                     } else {
                         MessageBox.Show (this, "Cannot load user");
                     }
@@ -67,15 +72,17 @@ namespace WebApplication1 {
             }
         }
 
-        protected void Button1_Click (object sender, EventArgs e) {
-            UpdateUserInfo (GetSingleADUser (listUsers.SelectedValue));
+        [WebMethod]
+        public List<string> BuildUsernameList (string prefixText, int count) {
+            List<string> list = new List<string> {
+                " "
+            };
+            list.AddRange (Globals.UserList.Select (user => user.UserName));
+            return list;
         }
 
-        protected void listUsers_Load (object sender, EventArgs e) {
-            if (!Page.IsPostBack) {
-                UpdateListUsers ();
-            }
-            //listUsers.Items.
+        protected void Button1_Click (object sender, EventArgs e) {
+            UpdateUserInfo (GetSingleADUser (comboUMUsers.SelectedValue));
         }
 
         public SearchResult GetSingleADUser (string input) {
@@ -105,16 +112,16 @@ namespace WebApplication1 {
         }
 
         public void UpdateListUsers () {
-            List<Users> UserList = GetAllADUsers (); List<string> UserNameList = new List<string> {
+            Globals.UserList = GetAllADUsers (); Globals.UserNameList = new List<string> {
                 " "
             };
 
-            foreach (var item in UserList) {
-                UserNameList.Add ((string)item.UserName);
+            foreach (Users item in Globals.UserList.OrderBy (item => item.UserName)) {
+                Globals.UserNameList.Add ((string)item.UserName);
             }
 
-            listUsers.DataSource = UserNameList;
-            listUsers.DataBind ();
+            comboUMUsers.DataSource = Globals.UserNameList;
+            comboUMUsers.DataBind ();
         }
 
         public void UpdateUserInfo (SearchResult input) {
@@ -224,10 +231,6 @@ namespace WebApplication1 {
             }
         }
 
-        protected void listUsers_SelectedIndexChanged (object sender, EventArgs e) {
-            UpdateUserInfo (GetSingleADUser (listUsers.SelectedValue));
-        }
-
         public void ClearUserProperties () {
             var textBoxes = GetChildControls<TextBox> (Panel1);
             foreach (var box in textBoxes) {
@@ -244,6 +247,32 @@ namespace WebApplication1 {
         protected void buttonUMEmployeeNumber_Click (object sender, EventArgs e) {
             textUMEmployeeNumber.Attributes["type"] = textUMEmployeeNumber.Attributes["type"] == "password" ? "" : "password";
             buttonUMEmployeeNumber.Text = textUMEmployeeNumber.Attributes["type"] == "password" ? "Show" : "Hide";
+        }
+
+        protected void textUMFilter_TextChanged (object sender, EventArgs e) {
+            Globals.UserNameList = new List<string> {
+                " "
+            };
+
+            Regex reg = new Regex ($".*{textUMFilter.Text}.*");
+            foreach (Users item in Globals.UserList.FindAll (delegate (Users user) {
+                return user.UserName.Contains ($"{textUMFilter.Text}");
+            }).OrderBy (item => item.UserName)) {
+                Globals.UserNameList.Add (item.UserName);
+            }
+
+            comboUMUsers.DataSource = Globals.UserNameList;
+            comboUMUsers.DataBind ();
+        }
+
+        protected void comboUMUsers_SelectedIndexChanged (object sender, EventArgs e) {
+            UpdateUserInfo (GetSingleADUser (comboUMUsers.SelectedValue));
+        }
+
+        protected void comboUMUsers_Load (object sender, EventArgs e) {
+            if (!Page.IsPostBack) {
+                UpdateListUsers ();
+            }
         }
     }
 
@@ -274,6 +303,9 @@ namespace WebApplication1 {
         public static NetworkCredential cred;
         public static DirectorySearcher searcher;
         public static bool save = true;
+        public static PrincipalContext principalContext;
+        public static List<Users> UserList;
+        public static List<string> UserNameList;
     }
 
     public static class MessageBox {

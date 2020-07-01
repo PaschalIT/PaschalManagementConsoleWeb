@@ -1,4 +1,5 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="WebApplication1.SiteMaster" %>
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="ajaxToolkit" %>
 
 <!DOCTYPE html>
 
@@ -18,7 +19,7 @@
 </head>
 <body>
     <form runat="server">
-        <asp:ScriptManager runat="server">
+        <asp:ScriptManager runat="server" ID="ScriptManager2" EnablePageMethods="true">
             <Scripts>
                 <%--To learn more about bundling scripts in ScriptManager see https://go.microsoft.com/fwlink/?LinkID=301884 --%>
                 <%--Framework Scripts--%>
@@ -53,6 +54,7 @@
                         <li><a runat="server" href="~/">Home</a></li>
                         <li><a runat="server" href="~/About">About</a></li>
                         <li><a runat="server" href="~/Contact">Contact</a></li>
+                        <li><a runat="server" href="~/Test">Test</a></li>
                     </ul>
                 </div>
             </div>

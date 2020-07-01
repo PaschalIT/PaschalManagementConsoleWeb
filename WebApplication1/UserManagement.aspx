@@ -1,13 +1,35 @@
 ﻿<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="UserManagement.aspx.cs" Inherits="WebApplication1._Default" %>
 
-<asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
+
+<asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="jumbotron">
-        <asp:Label ID="Label1" runat="server" Text="Username"></asp:Label>
         <br />
-        <asp:DropDownList ID="listUsers" runat="server" OnLoad="listUsers_Load" OnSelectedIndexChanged="listUsers_SelectedIndexChanged" ViewStateMode="Enabled" Width="300px" AutoPostBack="True">
-        </asp:DropDownList>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;
+        &nbsp;
+        <table class="nav-justified">
+            <tr>
+                <td>
+        <asp:Label ID="Label1" runat="server" Text="Username"></asp:Label>
+                </td>
+                <td>
         <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text="Refresh Info" />
+                </td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>
+        <ajaxToolkit:ComboBox ID="comboUMUsers" runat="server" AutoCompleteMode="SuggestAppend" DropDownStyle="DropDownList" ItemInsertLocation="OrdinalText" AutoPostBack="True" OnLoad="comboUMUsers_Load" OnSelectedIndexChanged="comboUMUsers_SelectedIndexChanged" RenderMode="Block">
+        </ajaxToolkit:ComboBox>
+                </td>
+                <td>
+        <asp:TextBox ID="textUMFilter" runat="server" AutoPostBack="True" OnTextChanged="textUMFilter_TextChanged"></asp:TextBox>
+                </td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
     </div>
 
     <asp:Panel ID="Panel1" runat="server" Height="504px" Width="100%">
@@ -51,7 +73,7 @@
                 <td style="width: 20%">Employee Number</td>
                 <td class="modal-sm" style="width: 30%">
                     <asp:TextBox ID="textUMEmployeeNumber" runat="server" Width="70%" ReadOnly="True"></asp:TextBox>
-                    <asp:Button ID="buttonUMEmployeeNumber" runat="server" OnClick="buttonUMEmployeeNumber_Click" Text="Show" />
+                    <asp:Button ID="buttonUMEmployeeNumber" runat="server" OnClick="buttonUMEmployeeNumber_Click" Text="Show" Height="100%" />
                 </td>
             </tr>
             <tr>
@@ -76,7 +98,7 @@
             </tr>
             <tr>
                 <td style="width: 20ex; ">Direct Reports</td>
-                <td class="modal-sm" style="width: 30%; " rowspan="4">
+                <td class="modal-sm" style="width: 30%; " rowspan="6">
                     <asp:ListBox ID="listUMDirectReports" runat="server" Height="100%" Width="70%"></asp:ListBox>
                 </td>
                 <td style="width: 20%; ">Failed Logons</td>
@@ -105,6 +127,25 @@
                 <td class="modal-sm" style="width: 30%">
                     <asp:TextBox ID="textUMLastModified" runat="server" Width="70%" ReadOnly="True"></asp:TextBox>
                 </td>
+            </tr>
+            <tr>
+                <td style="width: 20ex">&nbsp;</td>
+                <td style="width: 20%">&nbsp;</td>
+                <td class="modal-sm" style="width: 30%">&nbsp;</td>
+            </tr>
+            <tr>
+                <td style="width: 20ex">&nbsp;</td>
+                <td style="width: 20%">&nbsp;</td>
+                <td class="modal-sm" style="width: 30%; text-align: justify;">
+                    <asp:Button ID="buttonUMUnlockAccount1" runat="server" Height="100%" Text="Unlock Account" Width="34%" />
+                    &nbsp;<asp:Button ID="buttonUMResetPassword1" runat="server" Height="100%" Text="Reset Password" Width="34%" />
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 20ex">&nbsp;</td>
+                <td class="modal-sm" style="width: 30%; ">&nbsp;</td>
+                <td style="width: 20%">&nbsp;</td>
+                <td class="modal-sm" style="width: 30%">&nbsp;</td>
             </tr>
         </table>
     </asp:Panel>
