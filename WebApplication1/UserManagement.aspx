@@ -6,22 +6,25 @@
     <div class="jumbotron">
         <table class="nav-justified">
             <tr>
-                <td>
+                <td colspan="3">
         <asp:Label ID="Label1" runat="server" Text="Username"></asp:Label>
                 </td>
                 <td>
-        <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text="Refresh Info" />
-                </td>
+                    &nbsp;</td>
                 <td>&nbsp;</td>
             </tr>
             <tr>
-                <td>
+                <td style="width: 184px">
         <ajaxToolkit:ComboBox ID="comboUMUsers" runat="server" AutoCompleteMode="SuggestAppend" DropDownStyle="DropDownList" ItemInsertLocation="OrdinalText" AutoPostBack="True" OnLoad="comboUMUsers_Load" OnSelectedIndexChanged="comboUMUsers_SelectedIndexChanged" RenderMode="Block">
         </ajaxToolkit:ComboBox>
                 </td>
                 <td>
-        <asp:TextBox ID="textUMFilter" runat="server" AutoPostBack="True" OnTextChanged="textUMFilter_TextChanged"></asp:TextBox>
+                    &nbsp;</td>
+                <td>
+        <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text="Refresh Info" />
                 </td>
+                <td>
+                    &nbsp;</td>
                 <td>&nbsp;</td>
             </tr>
         </table>

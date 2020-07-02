@@ -72,15 +72,6 @@ namespace WebApplication1 {
             }
         }
 
-        [WebMethod]
-        public List<string> BuildUsernameList (string prefixText, int count) {
-            List<string> list = new List<string> {
-                " "
-            };
-            list.AddRange (Globals.UserList.Select (user => user.UserName));
-            return list;
-        }
-
         protected void Button1_Click (object sender, EventArgs e) {
             UpdateUserInfo (GetSingleADUser (comboUMUsers.SelectedValue));
         }
@@ -247,22 +238,6 @@ namespace WebApplication1 {
         protected void buttonUMEmployeeNumber_Click (object sender, EventArgs e) {
             textUMEmployeeNumber.Attributes["type"] = textUMEmployeeNumber.Attributes["type"] == "password" ? "" : "password";
             buttonUMEmployeeNumber.Text = textUMEmployeeNumber.Attributes["type"] == "password" ? "Show" : "Hide";
-        }
-
-        protected void textUMFilter_TextChanged (object sender, EventArgs e) {
-            Globals.UserNameList = new List<string> {
-                " "
-            };
-
-            Regex reg = new Regex ($".*{textUMFilter.Text}.*");
-            foreach (Users item in Globals.UserList.FindAll (delegate (Users user) {
-                return user.UserName.Contains ($"{textUMFilter.Text}");
-            }).OrderBy (item => item.UserName)) {
-                Globals.UserNameList.Add (item.UserName);
-            }
-
-            comboUMUsers.DataSource = Globals.UserNameList;
-            comboUMUsers.DataBind ();
         }
 
         protected void comboUMUsers_SelectedIndexChanged (object sender, EventArgs e) {
