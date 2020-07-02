@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="UserManagement.aspx.cs" Inherits="WebApplication1._Default" %>
+﻿<%@ Page Title="User Management" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="UserManagement.aspx.cs" Inherits="WebApplication1._Default" %>
 
 
 
@@ -132,8 +132,8 @@
                 <td style="width: 20ex">&nbsp;</td>
                 <td style="width: 20%">&nbsp;</td>
                 <td class="modal-sm" style="width: 30%; text-align: justify;">
-                    <asp:Button ID="buttonUMUnlockAccount1" runat="server" Height="100%" Text="Unlock Account" Width="34%" />
-                    &nbsp;<asp:Button ID="buttonUMResetPassword1" runat="server" Height="100%" Text="Reset Password" Width="34%" />
+                    <asp:Button ID="buttonUMUnlockAccount1" runat="server" Height="100%" Text="Unlock Account" Width="34%" OnClick="buttonUMUnlockAccount1_Click" />
+                    &nbsp;<asp:Button ID="buttonUMResetPassword1" runat="server" Height="100%" Text="Reset Password" Width="34%" Enabled="False" />
                 </td>
             </tr>
             <tr>

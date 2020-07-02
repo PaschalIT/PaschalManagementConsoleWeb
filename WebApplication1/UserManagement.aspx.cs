@@ -274,6 +274,15 @@ namespace WebApplication1 {
                 UpdateListUsers ();
             }
         }
+
+        protected void buttonUMUnlockAccount1_Click (object sender, EventArgs e) {
+            if (textUMUsername.Text.Length > 0) {
+                using (UserPrincipal user = UserPrincipal.FindByIdentity (Globals.principalContext, textUMUsername.Text)) {
+                    user.UnlockAccount ();
+                }
+                UpdateUserInfo (GetSingleADUser (textUMUsername.Text));
+            }
+        }
     }
 
     public class Users {
