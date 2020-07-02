@@ -1,17 +1,17 @@
 ﻿<%@ Page Title="Contact" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Contact.aspx.cs" Inherits="WebApplication1.Contact" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    <h2><%: Title %>.</h2>
-    <h3>Your contact page.</h3>
+    <h2><%: Title %></h2>
+    <h3>Paschal Air, Plumbing & Electric<br />IT Department</h3>
     <address>
-        One Microsoft Way<br />
-        Redmond, WA 98052-6399<br />
+        280 N Maestri Rd<br />
+        Springdale, AR 72762<br />
         <abbr title="Phone">P:</abbr>
-        425.555.0100
+        479-751-0195
     </address>
 
     <address>
-        <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
-        <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
+        <strong>Support:</strong>   <a href="mailto:support@gopaschal.com">Support@gopaschal.com</a><br />
+        <strong>Issues:</strong> <a href="https://github.com/PaschalIT/PaschalManagementConsoleWeb/issues" target="_blank">Submit a Ticket</a>
     </address>
 </asp:Content>

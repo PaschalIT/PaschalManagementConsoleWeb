@@ -4,11 +4,6 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="jumbotron">
-        <br />
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        &nbsp;&nbsp;
-        &nbsp;
         <table class="nav-justified">
             <tr>
                 <td>
