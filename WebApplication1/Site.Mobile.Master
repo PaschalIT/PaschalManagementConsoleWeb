@@ -2,13 +2,11 @@
 <%@ Register Src="~/ViewSwitcher.ascx" TagPrefix="friendlyUrls" TagName="ViewSwitcher" %>
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="ajaxToolkit" %>
 
-
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <meta name="viewport" content="width=device-width" />
-    <title></title>
+    <title>PMC <%: Page.Title %></title>
     <asp:ContentPlaceHolder runat="server" ID="HeadContent" />
 </head>
 <body>

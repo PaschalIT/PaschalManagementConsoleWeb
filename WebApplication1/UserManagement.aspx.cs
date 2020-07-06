@@ -22,6 +22,7 @@ namespace WebApplication1 {
                 listUMDirectReports.Attributes.Add ("ondblclick", ClientScript.GetPostBackEventReference (listUMDirectReports, "dblclick"));
                 //listUMDirectReports.Attributes.Add ("onclick", ClientScript.GetPostBackEventReference (listUMDirectReports, "mouseclick"));
                 textUMEmployeeNumber.Attributes["type"] = "password";
+                ClearUserProperties ();
             }
             if (Request["__EVENTARGUMENT"] != null) {
                 if (Request["__EVENTARGUMENT"] == "dblclick" && listUMDirectReports.SelectedIndex >= 0) {
@@ -226,8 +227,14 @@ namespace WebApplication1 {
             var textBoxes = GetChildControls<TextBox> (Panel1);
             foreach (var box in textBoxes) {
                 box.Text = "";
+                box.BorderWidth = 1;
+                box.BorderStyle = BorderStyle.Solid;
+                box.BorderColor = System.Drawing.ColorTranslator.FromHtml ("#CCCCCC");
             }
             listUMDirectReports.Items.Clear ();
+            listUMDirectReports.BorderColor = System.Drawing.ColorTranslator.FromHtml ("#CCCCCC");
+            listUMDirectReports.BorderStyle = BorderStyle.Solid;
+            listUMDirectReports.BorderWidth = 1;
         }
 
         public static IEnumerable<TControl> GetChildControls<TControl> (Control control) where TControl : Control {
@@ -257,6 +264,11 @@ namespace WebApplication1 {
                 }
                 UpdateUserInfo (GetSingleADUser (textUMUsername.Text));
             }
+        }
+
+        protected void buttonUMClear_Click (object sender, EventArgs e) {
+            comboUMUsers.SelectedIndex = -1;
+            ClearUserProperties ();
         }
     }
 
