@@ -3,6 +3,17 @@
 
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <script type="text/javascript">
+        function ConfirmResetPassword () {
+            return confirm("Are you sure you want to reset this password to default?");
+        }
+    </script>
+    <style type="text/css">
+        input[type=text]
+        {
+            text-indent: 5px;
+        }
+    </style>
     <div class="jumbotron">
         <table class="nav-justified">
             <tr>
@@ -15,7 +26,7 @@
             </tr>
             <tr>
                 <td style="width: 200px">
-        <ajaxToolkit:ComboBox ID="comboUMUsers" runat="server" AutoCompleteMode="SuggestAppend" DropDownStyle="DropDownList" ItemInsertLocation="OrdinalText" AutoPostBack="True" OnLoad="comboUMUsers_Load" OnSelectedIndexChanged="comboUMUsers_SelectedIndexChanged" Width="100%">
+        <ajaxToolkit:ComboBox ID="comboUMUsers" runat="server" AutoCompleteMode="SuggestAppend" DropDownStyle="DropDownList" ItemInsertLocation="OrdinalText" AutoPostBack="True" OnLoad="comboUMUsers_Load" OnSelectedIndexChanged="comboUMUsers_SelectedIndexChanged" Width="100%" BorderColor="#CCCCCC" BorderStyle="Solid" BorderWidth="1px">
         </ajaxToolkit:ComboBox>
                 </td>
                 <td style="width: 80px">
@@ -140,8 +151,9 @@
                 <td style="border: 2px solid #FFFFFF; margin: 2px; width: 15%">&nbsp;</td>
                 <td style="border: 2px solid #FFFFFF; margin: 2px; width: 15%">&nbsp;</td>
                 <td class="modal-sm" style="border: 2px solid #FFFFFF; margin: 2px; width: 35%; ">
-                    <asp:Button ID="buttonUMUnlockAccount1" runat="server" Height="100%" Text="Unlock Account" Width="34%" OnClick="buttonUMUnlockAccount1_Click" />
-                    &nbsp;<asp:Button ID="buttonUMResetPassword1" runat="server" Height="100%" Text="Reset Password" Width="34%" Enabled="False" />
+                    <asp:Button ID="buttonUMUnlockAccount" runat="server" Height="100%" Text="Unlock Account" Width="33.5%" OnClick="buttonUMUnlockAccount_Click" />
+                    &nbsp;<asp:Button ID="buttonUMResetPassword" runat="server" Height="100%" Text="Reset Password" Width="33.5%" OnClick="buttonUMResetPassword_Click" />
+                    <ajaxToolkit:ConfirmButtonExtender ID="buttonUMResetPassword_ConfirmButtonExtender" runat="server" BehaviorID="buttonUMResetPassword1_ConfirmButtonExtender" ConfirmText="Confirm Reset Password" TargetControlID="buttonUMResetPassword" />
                 </td>
             </tr>
             <tr>

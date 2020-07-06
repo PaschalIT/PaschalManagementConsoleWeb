@@ -229,21 +229,30 @@ namespace WebApplication1 {
         protected global::System.Web.UI.WebControls.TextBox textUMLastModified;
 
         /// <summary>
-        /// buttonUMUnlockAccount1 control.
+        /// buttonUMUnlockAccount control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button buttonUMUnlockAccount1;
+        protected global::System.Web.UI.WebControls.Button buttonUMUnlockAccount;
 
         /// <summary>
-        /// buttonUMResetPassword1 control.
+        /// buttonUMResetPassword control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button buttonUMResetPassword1;
+        protected global::System.Web.UI.WebControls.Button buttonUMResetPassword;
+
+        /// <summary>
+        /// buttonUMResetPassword_ConfirmButtonExtender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.ConfirmButtonExtender buttonUMResetPassword_ConfirmButtonExtender;
     }
 }

@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.DirectoryServices.AccountManagement;
-using System.Web.Services;
+using WebGrease.Css.Ast.Selectors;
 
 namespace WebApplication1 {
     [System.Web.Script.Services.ScriptService]
@@ -218,6 +218,8 @@ namespace WebApplication1 {
                 textUMLastModified.Text = Globals.User.LastModified;
                 listUMDirectReports.DataSource = Globals.User.DirectReports;
                 listUMDirectReports.DataBind ();
+                buttonUMResetPassword.Enabled = true;
+                buttonUMUnlockAccount.Enabled = true;
             } else {
                 ClearUserProperties ();
             }
@@ -235,6 +237,8 @@ namespace WebApplication1 {
             listUMDirectReports.BorderColor = System.Drawing.ColorTranslator.FromHtml ("#CCCCCC");
             listUMDirectReports.BorderStyle = BorderStyle.Solid;
             listUMDirectReports.BorderWidth = 1;
+            buttonUMResetPassword.Enabled = false;
+            buttonUMUnlockAccount.Enabled = false;
         }
 
         public static IEnumerable<TControl> GetChildControls<TControl> (Control control) where TControl : Control {
@@ -257,7 +261,7 @@ namespace WebApplication1 {
             }
         }
 
-        protected void buttonUMUnlockAccount1_Click (object sender, EventArgs e) {
+        protected void buttonUMUnlockAccount_Click (object sender, EventArgs e) {
             if (textUMUsername.Text.Length > 0) {
                 using (UserPrincipal user = UserPrincipal.FindByIdentity (Globals.principalContext, textUMUsername.Text)) {
                     user.UnlockAccount ();
@@ -270,7 +274,15 @@ namespace WebApplication1 {
             comboUMUsers.SelectedIndex = -1;
             ClearUserProperties ();
         }
-    }
+
+        protected void buttonUMResetPassword_Click (object sender, EventArgs e) {
+            if (textUMUsername.Text.Length > 0) {
+                using (UserPrincipal user = UserPrincipal.FindByIdentity (Globals.principalContext, textUMUsername.Text)) {
+                    user.SetPassword ($"Paschal@{Globals.User.EmployeeNumber.Split ('-')[1]}");
+                }
+            }
+        }
+    }        
 
     public class Users {
         public string Email { get; set; }
