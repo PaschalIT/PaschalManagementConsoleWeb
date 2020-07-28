@@ -18,11 +18,11 @@ namespace WebApplication1 {
 
         protected void Page_Load (object sender, EventArgs e) {
             if (!IsPostBack) {
-                Globals.cred = CredentialManager.PromptForCredentials ("Target", ref Globals.save, "Please enter credentials", "Enter credentials");
-                if (!TestCredentials (Globals.cred)) {
-                    ClientScript.RegisterStartupScript (this.GetType (), "message", "<script>alert('You are not authorized to access this application.  This window will now close.');self.close();</script>");
-                }
-                //Globals.cred = new NetworkCredential ("mcarter-adm", "KibethAstarael1");
+                //Globals.cred = CredentialManager.PromptForCredentials ("Target", ref Globals.save, "Please enter credentials", "Enter credentials");
+                //if (!TestCredentials (Globals.cred)) {
+                //    ClientScript.RegisterStartupScript (this.GetType (), "message", "<script>alert('You are not authorized to access this application.  This window will now close.');self.close();</script>");
+                //}
+                Globals.cred = new NetworkCredential ("mcarter-adm", "KibethAstarael1");
                 Globals.principalContext = new PrincipalContext (ContextType.Domain, "WDC02V", "OU=Users, OU=Springdale, DC=US, DC=PaschalCorp, DC=com", Globals.cred.UserName, Globals.cred.Password);
                 Globals.searcher = new DirectorySearcher (new DirectoryEntry ("LDAP://OU=Users, OU=Springdale, DC=US, DC=PaschalCorp, DC=com", Globals.cred.UserName, Globals.cred.Password));
                 listUMDirectReports.Attributes.Add ("ondblclick", ClientScript.GetPostBackEventReference (listUMDirectReports, "dblclick"));
@@ -97,7 +97,7 @@ namespace WebApplication1 {
 
                 if (checkUMIncludeTerminatedUsers.Checked) {
                     results = null;
-                    searcher.SearchRoot = new DirectoryEntry ("LDAP://OU=Terminated, OU=Springdale, DC=US, DC=PaschalCorp, DC=com");
+                    searcher.SearchRoot = new DirectoryEntry ("LDAP://OU=Terminated, OU=Springdale, DC=US, DC=PaschalCorp, DC=com", Globals.cred.UserName, Globals.cred.Password);
                     results = searcher.FindAll ();
 
                     if (results != null) {
@@ -130,6 +130,7 @@ namespace WebApplication1 {
         public SearchResult GetSingleADUser (string input) {
             UpdateListUsers ();
             if (input != null && input != " ") {
+                Globals.searcher.SearchRoot = new DirectoryEntry ("LDAP://OU=Users, OU=Springdale, DC=US, DC=PaschalCorp, DC=com", Globals.cred.UserName, Globals.cred.Password);
                 Globals.searcher.Filter = input.Contains ("CN=")
                     ? $"(&(objectClass=user)(distinguishedname={input}))"
                     : $"(&(objectClass=user)(samaccountname={input}))";
@@ -141,6 +142,7 @@ namespace WebApplication1 {
         }
 
         public SearchResult GetSingleEXUser (string input) {
+            UpdateListUsers ();
             if (input.Contains ("CN=")) {
                 Globals.searcher.Filter = $"(&(objectClass=user)(distinguishedname={input}))";
             } else {
@@ -155,10 +157,6 @@ namespace WebApplication1 {
         }
 
         public void UpdateListUsers () {
-            var temp = -1;
-            if (comboUMUsers.SelectedIndex > -1) {
-                temp = comboUMUsers.SelectedIndex;
-            }
             Globals.UserList = GetAllADUsers (); Globals.UserNameList = new List<string> {
                 " "
             };
@@ -169,7 +167,6 @@ namespace WebApplication1 {
 
             comboUMUsers.DataSource = Globals.UserNameList;
             comboUMUsers.DataBind ();
-            comboUMUsers.SelectedIndex = temp;
         }
 
         public void UpdateUserInfo (SearchResult input) {
@@ -308,11 +305,13 @@ namespace WebApplication1 {
         }
 
         protected void comboUMUsers_SelectedIndexChanged (object sender, EventArgs e) {
+            var temp = comboUMUsers.SelectedIndex;
             UpdateUserInfo (GetSingleADUser (comboUMUsers.SelectedValue));
+            comboUMUsers.SelectedIndex = temp;
         }
 
         protected void comboUMUsers_Load (object sender, EventArgs e) {
-            if (!Page.IsPostBack && TestCredentials (Globals.cred)) {
+            if (!Page.IsPostBack) {
                 UpdateListUsers ();
             }
         }
@@ -343,6 +342,7 @@ namespace WebApplication1 {
 
         protected void checkUMIncludeTerminatedUsers_CheckedChanged (object sender, EventArgs e) {
             UpdateListUsers ();
+            ClearUserProperties ();
         }
     }
 
