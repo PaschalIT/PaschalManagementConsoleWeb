@@ -13,13 +13,22 @@ namespace WebApplication1 {
     public partial class _Default {
 
         /// <summary>
-        /// Label1 control.
+        /// labelUMUsernameList control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label1;
+        protected global::System.Web.UI.WebControls.Label labelUMUsernameList;
+
+        /// <summary>
+        /// radioUMSiteGlobals control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton radioUMSiteGlobals;
 
         /// <summary>
         /// comboUMUsers control.
@@ -31,13 +40,31 @@ namespace WebApplication1 {
         protected global::AjaxControlToolkit.ComboBox comboUMUsers;
 
         /// <summary>
-        /// Button1 control.
+        /// buttonUMRefreshInfo control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button1;
+        protected global::System.Web.UI.WebControls.Button buttonUMRefreshInfo;
+
+        /// <summary>
+        /// radioUMSiteAR01 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton radioUMSiteAR01;
+
+        /// <summary>
+        /// checkUMIncludeTerminatedUsers control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox checkUMIncludeTerminatedUsers;
 
         /// <summary>
         /// buttonUMClear control.
@@ -47,6 +74,15 @@ namespace WebApplication1 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button buttonUMClear;
+
+        /// <summary>
+        /// radioUMSiteMO01 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton radioUMSiteMO01;
 
         /// <summary>
         /// Panel1 control.

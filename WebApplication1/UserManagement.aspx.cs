@@ -8,6 +8,9 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.DirectoryServices.AccountManagement;
 using WebGrease.Css.Ast.Selectors;
+using AdysTech.CredentialManager;
+using Microsoft.Ajax.Utilities;
+using System.Web.Services.Description;
 
 namespace WebApplication1 {
     [System.Web.Script.Services.ScriptService]
@@ -15,14 +18,18 @@ namespace WebApplication1 {
 
         protected void Page_Load (object sender, EventArgs e) {
             if (!IsPostBack) {
-                //Globals.cred = CredentialManager.PromptForCredentials ("Target", ref Globals.save, "Please enter credentials", "Enter credentials");
-                Globals.cred = new NetworkCredential ("mcarter-adm", "KibethAstarael1");
+                Globals.cred = CredentialManager.PromptForCredentials ("Target", ref Globals.save, "Please enter credentials", "Enter credentials");
+                if (!TestCredentials (Globals.cred)) {
+                    ClientScript.RegisterStartupScript (this.GetType (), "message", "<script>alert('You are not authorized to access this application.  This window will now close.');self.close();</script>");
+                }
+                //Globals.cred = new NetworkCredential ("mcarter-adm", "KibethAstarael1");
                 Globals.principalContext = new PrincipalContext (ContextType.Domain, "WDC02V", "OU=Users, OU=Springdale, DC=US, DC=PaschalCorp, DC=com", Globals.cred.UserName, Globals.cred.Password);
                 Globals.searcher = new DirectorySearcher (new DirectoryEntry ("LDAP://OU=Users, OU=Springdale, DC=US, DC=PaschalCorp, DC=com", Globals.cred.UserName, Globals.cred.Password));
                 listUMDirectReports.Attributes.Add ("ondblclick", ClientScript.GetPostBackEventReference (listUMDirectReports, "dblclick"));
                 //listUMDirectReports.Attributes.Add ("onclick", ClientScript.GetPostBackEventReference (listUMDirectReports, "mouseclick"));
                 textUMEmployeeNumber.Attributes["type"] = "password";
                 ClearUserProperties ();
+                //comboUMUsers.Focus ();
             }
             if (Request["__EVENTARGUMENT"] != null) {
                 if (Request["__EVENTARGUMENT"] == "dblclick" && listUMDirectReports.SelectedIndex >= 0) {
@@ -36,6 +43,28 @@ namespace WebApplication1 {
                     }
                 }
             }
+        }
+
+        public bool TestCredentials (NetworkCredential input) {
+            bool valid = false;
+
+            Globals.principalContext = new PrincipalContext (ContextType.Domain, "WDC02V", "OU=Users, OU=Springdale, DC=US, DC=PaschalCorp, DC=com");
+            Globals.searcher = new DirectorySearcher (new DirectoryEntry ("LDAP://OU=Users, OU=Springdale, DC=US, DC=PaschalCorp, DC=com")) {
+                Filter = $"(&(objectClass=user)(samaccountname={input.UserName}))"
+            };
+
+            UserPrincipal temp = UserPrincipal.FindByIdentity (Globals.principalContext, input.UserName);
+
+            if (temp == null) {
+                //MessageBox.Show (this, "Test");
+                return false;
+            }
+
+            if (temp.IsMemberOf (GroupPrincipal.FindByIdentity (new PrincipalContext (ContextType.Domain, "WDC02V", "OU=Security, OU=UserGroups, OU=Groups, OU=Springdale, DC=US, DC=PaschalCorp, DC=com"), IdentityType.Name, "PMC-Web"))) {
+                valid = true;
+            }
+
+            return valid;
         }
 
         public List<Users> GetAllADUsers () {
@@ -65,6 +94,27 @@ namespace WebApplication1 {
                         listADUsers.Add (temp);
                     }
                 }
+
+                if (checkUMIncludeTerminatedUsers.Checked) {
+                    results = null;
+                    searcher.SearchRoot = new DirectoryEntry ("LDAP://OU=Terminated, OU=Springdale, DC=US, DC=PaschalCorp, DC=com");
+                    results = searcher.FindAll ();
+
+                    if (results != null) {
+                        for (int i = 0; i < results.Count; i++) {
+                            result = results[i];
+                            Users temp = new Users {
+                                DisplayName = (string)result.Properties["displayname"][0],
+                                UserName = (string)result.Properties["samaccountname"][0]
+                            };
+                            if (result.Properties["mail"].Count > 0) {
+                                temp.Email = (string)result.Properties["mail"][0];
+                            }
+                            listADUsers.Add (temp);
+                        }
+                    }
+                }
+
                 return listADUsers;
 
                 //Label1.Text = listADUsers[0].DisplayName;
@@ -78,6 +128,7 @@ namespace WebApplication1 {
         }
 
         public SearchResult GetSingleADUser (string input) {
+            UpdateListUsers ();
             if (input != null && input != " ") {
                 Globals.searcher.Filter = input.Contains ("CN=")
                     ? $"(&(objectClass=user)(distinguishedname={input}))"
@@ -104,6 +155,10 @@ namespace WebApplication1 {
         }
 
         public void UpdateListUsers () {
+            var temp = -1;
+            if (comboUMUsers.SelectedIndex > -1) {
+                temp = comboUMUsers.SelectedIndex;
+            }
             Globals.UserList = GetAllADUsers (); Globals.UserNameList = new List<string> {
                 " "
             };
@@ -114,6 +169,7 @@ namespace WebApplication1 {
 
             comboUMUsers.DataSource = Globals.UserNameList;
             comboUMUsers.DataBind ();
+            comboUMUsers.SelectedIndex = temp;
         }
 
         public void UpdateUserInfo (SearchResult input) {
@@ -256,7 +312,7 @@ namespace WebApplication1 {
         }
 
         protected void comboUMUsers_Load (object sender, EventArgs e) {
-            if (!Page.IsPostBack) {
+            if (!Page.IsPostBack && TestCredentials (Globals.cred)) {
                 UpdateListUsers ();
             }
         }
@@ -272,7 +328,9 @@ namespace WebApplication1 {
 
         protected void buttonUMClear_Click (object sender, EventArgs e) {
             comboUMUsers.SelectedIndex = -1;
+            checkUMIncludeTerminatedUsers.Checked = false;
             ClearUserProperties ();
+            UpdateListUsers ();
         }
 
         protected void buttonUMResetPassword_Click (object sender, EventArgs e) {
@@ -282,7 +340,11 @@ namespace WebApplication1 {
                 }
             }
         }
-    }        
+
+        protected void checkUMIncludeTerminatedUsers_CheckedChanged (object sender, EventArgs e) {
+            UpdateListUsers ();
+        }
+    }
 
     public class Users {
         public string Email { get; set; }

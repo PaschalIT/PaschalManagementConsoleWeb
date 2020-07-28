@@ -3,44 +3,75 @@
 
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    <script type="text/javascript">
-        function ConfirmResetPassword () {
-            return confirm("Are you sure you want to reset this password to default?");
+    <style>
+        input[type=submit] {
+            text-align: center;
+            line-height: 10px;
         }
-    </script>
-    <style type="text/css">
-        input[type=text]
-        {
-            text-indent: 5px;
+        input[type=text], input[type=password] {
+            text-indent: 3px;
+        }
+        input[type=radio] {
+            margin: 0px;
+            margin-bottom: 0px;
+            margin-top: 0px;
+            font-size: 12px;
+            font-style: normal;
+        }
+        label {
+            margin-bottom: 0px;
+            font-weight: normal;
         }
     </style>
     <div class="jumbotron">
-        <table class="nav-justified">
+        <table style="width:100%;">
             <tr>
-                <td colspan="5">
-        <asp:Label ID="Label1" runat="server" Text="Username"></asp:Label>
+                <td style="width: 200px">
+        <asp:Label ID="labelUMUsernameList" runat="server" Text="Username" Height="20px"></asp:Label>
                 </td>
-                <td>
-                    &nbsp;</td>
-                <td>&nbsp;</td>
+                <td class="auto-style3" style="width: 80px"></td>
+                <td style="width: 100px">&nbsp;</td>
+                <td class="auto-style3" style="width: 80px"></td>
+                <td class="auto-style3">
+                    <asp:RadioButton ID="radioUMSiteGlobals" runat="server" Text="Globals" Enabled="False" />
+                </td>
+                <td class="auto-style3"></td>
+                <td class="auto-style3"></td>
+                <td class="auto-style3"></td>
+                <td class="auto-style3"></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+        <ajaxToolkit:ComboBox ID="comboUMUsers" runat="server" AutoCompleteMode="SuggestAppend" DropDownStyle="DropDownList" ItemInsertLocation="OrdinalText" AutoPostBack="True" OnLoad="comboUMUsers_Load" OnSelectedIndexChanged="comboUMUsers_SelectedIndexChanged" Width="100%" BorderColor="#CCCCCC" BorderStyle="Solid" BorderWidth="1px" Height="20px" RenderMode="Block">
+        </ajaxToolkit:ComboBox>
+                </td>
+                <td style="width: 100px">
+        <asp:Button ID="buttonUMRefreshInfo" runat="server" OnClick="Button1_Click" Text="Refresh Info" Width="100px" Height="20px" />
+                </td>
+                <td class="auto-style3" style="width: 80px"></td>
+                <td class="auto-style3">
+                    <asp:RadioButton ID="radioUMSiteAR01" runat="server" Text="AR01" Enabled="False" />
+                </td>
+                <td class="auto-style3"></td>
+                <td class="auto-style3"></td>
+                <td class="auto-style3"></td>
+                <td class="auto-style3"></td>
             </tr>
             <tr>
                 <td style="width: 200px">
-        <ajaxToolkit:ComboBox ID="comboUMUsers" runat="server" AutoCompleteMode="SuggestAppend" DropDownStyle="DropDownList" ItemInsertLocation="OrdinalText" AutoPostBack="True" OnLoad="comboUMUsers_Load" OnSelectedIndexChanged="comboUMUsers_SelectedIndexChanged" Width="100%" BorderColor="#CCCCCC" BorderStyle="Solid" BorderWidth="1px">
-        </ajaxToolkit:ComboBox>
+                    <asp:CheckBox ID="checkUMIncludeTerminatedUsers" runat="server" AutoPostBack="True" OnCheckedChanged="checkUMIncludeTerminatedUsers_CheckedChanged" Text="Include Terminated Users" />
                 </td>
-                <td style="width: 80px">
-                    &nbsp;</td>
+                <td style="width: 80px">&nbsp;</td>
                 <td style="width: 100px">
-        <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text="Refresh Info" Width="100px" />
+                    <asp:Button ID="buttonUMClear" runat="server" OnClick="buttonUMClear_Click" Text="Clear" Width="100px" Height="20px" />
                 </td>
-                <td style="width: 40px">
-                    &nbsp;</td>
+                <td style="width: 80px">&nbsp;</td>
                 <td>
-                    <asp:Button ID="buttonUMClear" runat="server" OnClick="buttonUMClear_Click" Text="Clear" Width="100px" />
+                    <asp:RadioButton ID="radioUMSiteMO01" runat="server" Text="MO01" Font-Bold="false" Enabled="False" />
                 </td>
-                <td>
-                    &nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
                 <td>&nbsp;</td>
             </tr>
         </table>
